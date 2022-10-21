@@ -1,8 +1,6 @@
-# HelloWorld
+# QR-Detector
 
-This is the **HelloWorld** app to get you started with using the `Azena SDK`. This simple app shows how to retrieve an image from the VideoPipeline and display the image on a Web UI.
-
-This document assumes that [OpenJDK 8 is installed](https://openjdk.java.net/install/).
+This is the **QR-Detector** app to recognize and translate QR codes in real time,this app also recognize the movement direction of a code in order to know where it goes.
 
 
 ## Build the app
