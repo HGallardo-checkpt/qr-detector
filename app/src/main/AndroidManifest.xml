@@ -1,27 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.checkpoint.qr.detector">
-    <uses-permission android:name="com.securityandsafetythings.permission.WEBSERVER" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="com.securityandsafetythings.permission.VIDEO"/>
-    <uses-permission android:name="com.securityandsafetythings.permission.MESSAGE_PUBLISH"/>
-    <uses-feature android:name="com.securityandsafetythings.devicecapabilities.messagebroker" android:required="true" />
+    package="com.checkpoint.qrdetector">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
-        android:label="${applicationLabel}"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        tools:ignore="GoogleAppIndexingWarning">
-        <uses-library
-            android:name="com.securityandsafetythings.apis.v5"
-            android:required="true" />
-        <service
-            android:name=".services.MainService"
-            android:permission="com.securityandsafetythings.permission.START_SOLUTION">
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.QRDetector"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.securityandsafetythings.intent.category.SOLUTION" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </service>
+        </activity>
     </application>
+
 </manifest>
