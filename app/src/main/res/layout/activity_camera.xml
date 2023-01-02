@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.CameraViewFragment">
+    tools:context=".CameraActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="60">
+
         <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/preview"
             tools:ignore="MissingClass" />
 
     </RelativeLayout>
@@ -27,11 +27,13 @@
             android:layout_marginLeft="25dp"
             android:layout_weight="50"
             android:gravity="center">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Direction detected: "
                 android:textColor="@color/purple_500"
-                android:text="Direction detected: "/>
+                android:textSize="19sp" />
 
         </RelativeLayout>
         <RelativeLayout
@@ -39,10 +41,12 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:gravity="center">
+
             <TextView
+                android:id="@+id/textDirectionDetected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""/>
+                android:text="" />
 
         </RelativeLayout>
 
@@ -59,11 +63,13 @@
             android:layout_marginLeft="25dp"
             android:layout_weight="50"
             android:gravity="center">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/purple_500"
-                android:text="Translation: "/>
+                android:text="Code Translation: "
+                android:textColor="@color/purple_700"
+                android:textSize="19sp" />
 
         </RelativeLayout>
         <RelativeLayout
@@ -71,9 +77,12 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:gravity="center">
+
             <TextView
+                android:id="@+id/textTranslationCode"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                />
 
         </RelativeLayout>
 

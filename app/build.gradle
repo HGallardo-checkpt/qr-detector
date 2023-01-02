@@ -61,6 +61,4 @@ dependencies {
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation 'androidx.camera:camera-camera2:1.2.0'
     implementation 'com.herohan:UVCAndroid:1.0.4'
-    implementation 'com.quickbirdstudios:opencv:4.5.3.0'
-    implementation 'com.quickbirdstudios:opencv-contrib:4.5.3.0'
 }

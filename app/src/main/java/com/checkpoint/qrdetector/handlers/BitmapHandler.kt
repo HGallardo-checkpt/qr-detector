@@ -21,7 +21,6 @@ class BitmapHandler (looper: Looper) : Handler(looper) {
             Message.SET_BITMAP -> {
                 val currentBitmap = msg.obj as Bitmap
                 counter ++
-                Log.e("BitmapHandler -->","RECEIVE BITMAP FROM CAMERA")
                 //Evento to response bitmap for postproccesing.
                 OnDetectionProcessEvent(currentBitmap).broadcastEvent()
             }

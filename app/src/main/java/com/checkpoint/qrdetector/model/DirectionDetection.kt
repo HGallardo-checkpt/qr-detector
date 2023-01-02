@@ -7,4 +7,5 @@ class DirectionDetection {
     var translate: String? = null
     var center: Point? = null
     var position: Point? = null
+    var image: String?= null
 }

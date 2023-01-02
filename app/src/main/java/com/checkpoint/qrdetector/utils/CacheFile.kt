@@ -16,8 +16,8 @@ class CacheFile(private  var context: Context) {
     private val CHILD_DIR = "/images"
     private val TEMP_FILE_NAME = "img"
     private val FILE_EXTENSION = ".png"
-
     private val COMPRESS_QUALITY = 100
+
     fun saveImgToCache(bitmap: Bitmap, name: String): File? {
         var cachePath: File? = null
         var fileName: String = TEMP_FILE_NAME

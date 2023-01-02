@@ -2,22 +2,30 @@ package com.checkpoint.qrdetector
 
 import android.graphics.Point
 import android.hardware.usb.UsbDevice
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.ImageView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.checkpoint.qrdetector.api.QRDetectionApiRest
+import com.checkpoint.qrdetector.api.model.DetectionEventRequest
 import com.checkpoint.qrdetector.detector.QRCodeReader
 import com.checkpoint.qrdetector.detector.ReaderCodeListener
 import com.checkpoint.qrdetector.events.OnDetectionProcessEvent
+import com.checkpoint.qrdetector.events.OnFinishDetectionEvent
 import com.checkpoint.qrdetector.events.OnPostProccessingCompletedEvent
 import com.checkpoint.qrdetector.events.OnPostProccessingNotDetectedEvent
 import com.checkpoint.qrdetector.handlers.BitmapHandler
 import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
+import com.checkpoint.qrdetector.utils.Encode
 import com.checkpoint.qrdetector.utils.NV21toBitmap
 import com.herohan.uvcapp.CameraHelper
 import com.herohan.uvcapp.ICameraHelper
@@ -27,6 +35,8 @@ import com.serenegiant.widget.AspectRatioSurfaceView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 
 class MainActivity : AppCompatActivity() {
@@ -58,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     private val DIRECTION_DETECTOR_THREAD_NAME = String.format(
         "%s%s",
-        MainActivity::class.java.getSimpleName(), "DetectorThread"
+        MainActivity::class.java.simpleName, "DetectorThread"
     )
 
     private val BITMAP_THREAD_NAME = String.format(
@@ -68,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     private val INFERENCE_THREAD_NAME = String.format(
         "%s%s",
-        MainActivity::class.java.getSimpleName(), "InferenceThread"
+        MainActivity::class.java.simpleName, "InferenceThread"
     )
 
     private val BITMAP_HANDLER_LOCK = Any()
@@ -249,8 +259,9 @@ class MainActivity : AppCompatActivity() {
             detectionResult.second!![0].boundingBox!!.left,
             detectionResult.second!![0].boundingBox!!.top
         )
-        directionDetectionList!!.add(directionDetection)
+        directionDetection.image = Encode(detectionResult.first!!).encodeImage()
 
+        directionDetectionList!!.add(directionDetection)
         detectionCounter++
     }
 
@@ -268,7 +279,7 @@ class MainActivity : AppCompatActivity() {
                      if (!mDirectorDetectorHandler!!.hasMessages(DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal)) {
                           mDirectorDetectorHandler!!.obtainMessage(
                              DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal,
-                              directionDetectionList
+                              directionDetectionList.clone()
                          ).sendToTarget()
                          detectionCounter = 0
                          directionDetectionList.clear()
@@ -278,10 +289,34 @@ class MainActivity : AppCompatActivity() {
          }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onEvent(onFinishDetectionEvent: OnFinishDetectionEvent) {
+
+        val direction = onFinishDetectionEvent.getResultDirection()
+        val translation = onFinishDetectionEvent.getResultTranslation()
+        val image = onFinishDetectionEvent.getImageBase64()
+        val now: OffsetDateTime = OffsetDateTime.now()
+        val formatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+        val date = formatter.format(now)
+        val request = DetectionEventRequest(
+            image!!,
+            translation!!,
+            direction!!,
+            date
+        )
+        runOnUiThread {
+
+            Toast.makeText(this, direction, LENGTH_LONG).show()
+        }
+        Log.e("--->",request.toString())
+       // QRDetectionApiRest("http://18.191.22.171:5000").postEvent(request)
+
+    }
+
     /*
      * Thread declaration for each process required in detection translation qr code task
     */
-
     private fun startBitmapHandlerThread() {
         mBitmapHandlerThread = HandlerThread(BITMAP_THREAD_NAME)
         mBitmapHandlerThread!!.start()

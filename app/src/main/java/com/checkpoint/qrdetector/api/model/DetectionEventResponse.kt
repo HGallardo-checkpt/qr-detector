@@ -1,4 +1,7 @@
 package com.checkpoint.qrdetector.api.model
 
-class DetectionEventResponse {
-}
+import com.google.gson.annotations.SerializedName
+
+data class DetectionEventResponse(
+    @SerializedName("total")val  total: Int
+)
