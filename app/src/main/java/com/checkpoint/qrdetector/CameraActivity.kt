@@ -20,6 +20,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.checkpoint.qrdetector.api.APIInterfaces
+import com.checkpoint.qrdetector.api.QRDetectionApiRest
+import com.checkpoint.qrdetector.api.model.DetectionEventRequest
 import com.checkpoint.qrdetector.databinding.ActivityCameraBinding
 import com.checkpoint.qrdetector.detector.QRCodeReader
 import com.checkpoint.qrdetector.events.OnDetectionProcessEvent
@@ -236,6 +239,14 @@ class CameraActivity : AppCompatActivity() {
             txtTranslation!!.text = translation
             txtDirection!!.text = direction
         }
+        val request = DetectionEventRequest(
+            "data:image/jpeg;base64,"+image!!,
+            translation!!,
+            direction!!,
+            date
+        )
+        QRDetectionApiRest("http://10.203.223.171:5000").postEvent(request)
+
     }
 
     /*

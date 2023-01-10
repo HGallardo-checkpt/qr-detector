@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity() {
                             val nv21 = ByteArray(it.remaining())
                             it.get(nv21,0,nv21.size)
 
-                            val bitmap  = nV21toBitmap!!.nv21ToBitmap(nv21,size!!.width,size!!.height)
+                            val bitmap  = nV21toBitmap!!.nv21ToBitmap(nv21,size!!.width,size.height)
                             mBitmapHandler!!.obtainMessage(BitmapHandler.Message.SET_BITMAP.ordinal, bitmap)
                                 .sendToTarget()
                         }
@@ -261,7 +261,7 @@ class MainActivity : AppCompatActivity() {
         )
         directionDetection.image = Encode(detectionResult.first!!).encodeImage()
 
-        directionDetectionList!!.add(directionDetection)
+        directionDetectionList.add(directionDetection)
         detectionCounter++
     }
 
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, direction, LENGTH_LONG).show()
         }
         Log.e("--->",request.toString())
-       // QRDetectionApiRest("http://18.191.22.171:5000").postEvent(request)
+        QRDetectionApiRest("http://10.203.223.171:5000").postEvent(request)
 
     }
 

@@ -1,6 +1,7 @@
 package com.checkpoint.qrdetector.api
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.checkpoint.qrdetector.api.model.DetectionEventRequest
 import java.time.OffsetDateTime
@@ -26,6 +27,8 @@ class QRDetectionApiRest(url: String) : ApiClient() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun postEvent(detectionEventRequest: DetectionEventRequest):Boolean {
         val response = api?.sendDetectionEvent(detectionEventRequest)?.execute()
+        Log.e("RESULT",response.toString())
+
         return response!!.code() == 200
 
     }

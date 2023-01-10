@@ -21,7 +21,7 @@ class QRCodeReader internal constructor() {
     }
 
     fun readCode(bitmap: Bitmap,listener: ReaderCodeListener) {
-         val image = InputImage.fromBitmap(bitmap!!, 0)
+         val image = InputImage.fromBitmap(bitmap, 0)
          scanner!!.process(image)
             .addOnSuccessListener { barcodes ->
                 listener.result(Pair(bitmap,barcodes))
@@ -31,7 +31,7 @@ class QRCodeReader internal constructor() {
             }
         }
     fun readCode(bitmap: Bitmap): Task<MutableList<Barcode>> {
-        val image = InputImage.fromBitmap(bitmap!!, 0)
+        val image = InputImage.fromBitmap(bitmap, 0)
         return scanner!!.process(image)
 
     }

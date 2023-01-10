@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 interface APIInterfaces {
 
-    @POST("/api/detected")
-    fun sendDetectionEvent( @Body event: DetectionEventRequest): Call<DetectionEventResponse>
+    @POST("/")
+    fun sendDetectionEvent( @Body event: DetectionEventRequest): Call<String>
 
 }
