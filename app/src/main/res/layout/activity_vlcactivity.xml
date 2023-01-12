@@ -1,13 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VLCActivity">
+    tools:context=".VLCActivity"
+    android:orientation="vertical">
+
+
     <TextureView
         android:id="@+id/videoLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        tools:ignore="MissingConstraints"/>
+
+    <RelativeLayout
+        android:id="@+id/rlButtonAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_qr"
+            app:backgroundTint="@color/GRAY"
+            app:fabCustomSize="70dp"
+            app:maxImageSize="35dp"
+            app:tint="@color/white"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="60dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/qr_scanner"
+            app:lottie_speed="1"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:gravity="end">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            app:backgroundTint="@color/GRAY"
+            app:fabCustomSize="70dp"
+            app:maxImageSize="50dp"
+            app:tint="@color/white"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="60dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

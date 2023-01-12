@@ -13,7 +13,6 @@ class EventDetailActivity : AppCompatActivity() {
     private var textDirectionDetected: TextView? = null
     private var textTranslationCode: TextView? = null
     private var imgDetection: ImageView? = null
-    private var cache: BitmapLruCache? = null
     private var cacheFile:   CacheFile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,10 +20,13 @@ class EventDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_event_detail)
         cacheFile = CacheFile(this)
 
+
         textDate= findViewById(R.id.textDate)
         textDirectionDetected= findViewById(R.id.textDirectionDetected)
         textTranslationCode= findViewById(R.id.textTranslationCode)
         imgDetection= findViewById(R.id.imgDetection)
+
+
 
         var bundle :Bundle ?=intent.extras
         var date = bundle!!.getString("date")

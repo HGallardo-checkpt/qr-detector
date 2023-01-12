@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Point
 import android.graphics.SurfaceTexture
 import android.graphics.drawable.Icon
@@ -16,8 +17,10 @@ import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.TextureView
+import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.checkpoint.qrdetector.api.QRDetectionApiRest
 import com.checkpoint.qrdetector.api.model.DetectionEventRequest
 import com.checkpoint.qrdetector.detector.QRCodeReader
@@ -30,10 +33,12 @@ import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
 import com.checkpoint.qrdetector.notification.NotificationBuilder
+import com.checkpoint.qrdetector.ui.EventDetailFragment
 import com.checkpoint.qrdetector.utils.CacheFile
 import com.checkpoint.qrdetector.utils.Encode
 import com.checkpoint.qrdetector.utils.NV21toBitmap
 import com.checkpoint.qrdetector.utils.Resize
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -55,7 +60,7 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
     private var libVlc: LibVLC? = null
     private var mediaPlayer: MediaPlayer? = null
     private var videoLayout: TextureView? = null
-    private val url = "rtsp://admin1:adminroot@10.203.220.11/stream1"
+    private val url = "rtsp://admin1:adminroot@10.203.222.176/stream1"
     private lateinit var cacheFile: CacheFile
     private var nV21toBitmap: NV21toBitmap? = null
     private var reader: QRCodeReader? = null
@@ -88,7 +93,27 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vlcactivity)
-        videoLayout = findViewById(R.id.videoLayout)
+
+
+        val btnBack:        FloatingActionButton = findViewById(R.id.btnBack)
+        val btnAnimation:   FloatingActionButton = findViewById(R.id.btnAnimation)
+        val rlButton:       RelativeLayout = findViewById(R.id.rlButton)
+        val rlAnimation:    RelativeLayout= findViewById(R.id.rlAnimation)
+        val rlButtonAnimation: RelativeLayout= findViewById(R.id.rlButtonAnimation)
+
+        btnBack.setOnClickListener {
+            rlButton.isVisible=false
+            rlAnimation.isVisible=false
+
+            rlButtonAnimation.isVisible=true
+        }
+
+        btnAnimation.setOnClickListener {
+            rlButton.isVisible=true
+            rlAnimation.isVisible=true
+            rlButtonAnimation.isVisible=false
+        }
+         videoLayout = findViewById(R.id.videoLayout)
         videoLayout!!.surfaceTextureListener = this
         cacheFile = CacheFile(this)
 
@@ -196,10 +221,27 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
 
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        var date =intent!!.extras!!.getString("date")
+        var translate =intent!!.extras!!.getString("translation")
+        var direction =intent!!.extras!!.getString("direction")
+        var image =intent!!.extras!!.getString("idImage")
+        var fragment = EventDetailFragment.newInstance(date!!,translate!!,direction!!,image!!)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, fragment, "FRAGMENT")
+            .disallowAddToBackStack()
+            .commit()
+
+
+    }
 
     @SuppressLint("NewApi")
     private fun notifyEvent(date: String, translation: String, direction: String, image: Bitmap){
-        val resultIntent = Intent(this, EventDetailActivity::class.java)
+        val resultIntent = Intent(this, VLCActivity::class.java)
         val idImage = UUID.randomUUID().toString()
         cacheFile!!.saveImgToCache(image,"${idImage}")
 

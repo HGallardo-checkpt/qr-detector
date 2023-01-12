@@ -40,6 +40,8 @@ import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
 import com.checkpoint.qrdetector.notification.NotificationBuilder
+import com.checkpoint.qrdetector.ui.AdminConsoleFragment
+import com.checkpoint.qrdetector.ui.EventDetailFragment
 import com.checkpoint.qrdetector.utils.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -101,7 +103,6 @@ class CameraActivity : AppCompatActivity() {
         txtDirection = binding.textDirectionDetected
 
         cacheFile = CacheFile(this)
-
         EventBus.getDefault().register(this)
         nV21toBitmap = NV21toBitmap(this)
         reader = QRCodeReader()
@@ -137,6 +138,24 @@ class CameraActivity : AppCompatActivity() {
         stopBitmapHandlerThread()
         stopInferenceThread()
         stopDirectionDetectorThread()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        var date =intent!!.extras!!.getString("date")
+        var translate =intent!!.extras!!.getString("translation")
+        var direction =intent!!.extras!!.getString("direction")
+        var image =intent!!.extras!!.getString("idImage")
+        var fragment = EventDetailFragment.newInstance(date!!,translate!!,direction!!,image!!)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, fragment, "FRAGMENT")
+            .disallowAddToBackStack()
+            .commit()
+
+
     }
 
     private fun startCamera() {
@@ -178,7 +197,7 @@ class CameraActivity : AppCompatActivity() {
 
     @SuppressLint("NewApi")
     private fun notifyEvent(date: String, translation: String, direction: String, image: Bitmap){
-        val resultIntent = Intent(this, EventDetailActivity::class.java)
+        val resultIntent = Intent(this, CameraActivity::class.java)
         val idImage = UUID.randomUUID().toString()
         cacheFile!!.saveImgToCache(image,"${idImage}")
 
