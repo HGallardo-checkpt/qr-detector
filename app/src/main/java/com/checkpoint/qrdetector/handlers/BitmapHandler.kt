@@ -14,13 +14,13 @@ import com.checkpoint.qrdetector.utils.CacheFile
 *
 * */
 class BitmapHandler (looper: Looper) : Handler(looper) {
-    private var  counter = 0
+
      override fun handleMessage(msg: android.os.Message) {
         when (Message.fromOrdinal(msg.what)) {
             //Handler message
             Message.SET_BITMAP -> {
                 val currentBitmap = msg.obj as Bitmap
-                counter ++
+
                 //Evento to response bitmap for postproccesing.
                 OnDetectionProcessEvent(currentBitmap).broadcastEvent()
             }

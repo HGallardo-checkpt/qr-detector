@@ -38,9 +38,7 @@ class InferenceHandler(looper: Looper) : Handler(looper) {
 
                 }else{
 
-                    Log.e("addOnSuccessListener","DETECTED CODE")
-                    OnPostProccessingCompletedEvent(Pair(imageBmp!!,barcodes!!)).broadcastEvent()
-
+                     OnPostProccessingCompletedEvent(Pair(imageBmp!!,barcodes!!)).broadcastEvent()
                 }
 
         }

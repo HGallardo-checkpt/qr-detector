@@ -25,9 +25,6 @@ class DirectionDetectorHandler(looper: Looper) : Handler(looper) {
                     val center: Point? = directionDetectionList[0].center
                     val firstLocation: Point? = directionDetectionList[0].position
                     val secondLocation: Point? = directionDetectionList[size].position
-                    Log.e("center", "" + center.toString())
-                    Log.e("firstLocation", "" + firstLocation.toString())
-                    Log.e("secondLocation", "" + secondLocation.toString())
                     if (firstLocation!!.x < secondLocation!!.x) {
                         OnFinishDetectionEvent(
                             "DOWN TO UP",

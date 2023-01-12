@@ -1,8 +1,11 @@
 package com.checkpoint.qrdetector.events
 
+import android.graphics.Bitmap
+
 class OnFinishDetectionEvent(private val direction: String,
                              private val translate: String?,
-                             private val imageB64: String) : EventBase() {
+                             private val image: Bitmap
+) : EventBase() {
 
 
     fun getResultDirection(): String? {
@@ -12,8 +15,8 @@ class OnFinishDetectionEvent(private val direction: String,
     fun getResultTranslation(): String? {
         return translate
     }
-    fun getImageBase64():String?{
-        return imageB64
+    fun getImageBase64():Bitmap?{
+        return image
     }
 
 }

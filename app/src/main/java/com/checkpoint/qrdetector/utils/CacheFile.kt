@@ -2,11 +2,9 @@ package com.checkpoint.qrdetector.utils
 
 import android.content.Context
 import android.graphics.Bitmap
-
+import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.Nullable
-import androidx.core.content.ContentProviderCompat.requireContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -35,4 +33,12 @@ class CacheFile(private  var context: Context) {
         }
         return cachePath
     }
+    fun getImageFromCache(name: String):Bitmap{
+        val cachePath = File(context.cacheDir.path+CHILD_DIR)
+        val pathName = "$cachePath/$name$FILE_EXTENSION"
+        val bitmap = BitmapFactory.decodeFile(pathName)
+        return bitmap
+
+    }
+
 }

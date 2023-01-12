@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream
 
 class Encode(private var bitmap: Bitmap) {
 
+
     fun encodeImage(): String? {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)

@@ -1,6 +1,12 @@
 package com.checkpoint.qrdetector
 
+import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.drawable.Icon
 import android.hardware.usb.UsbDevice
 import android.os.Build
 import android.os.Bundle
@@ -9,12 +15,9 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.ImageView
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.checkpoint.qrdetector.api.QRDetectionApiRest
-import com.checkpoint.qrdetector.api.model.DetectionEventRequest
+import com.checkpoint.qrdetector.cache.BitmapLruCache
 import com.checkpoint.qrdetector.detector.QRCodeReader
 import com.checkpoint.qrdetector.detector.ReaderCodeListener
 import com.checkpoint.qrdetector.events.OnDetectionProcessEvent
@@ -25,7 +28,8 @@ import com.checkpoint.qrdetector.handlers.BitmapHandler
 import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
-import com.checkpoint.qrdetector.utils.Encode
+import com.checkpoint.qrdetector.notification.NotificationBuilder
+import com.checkpoint.qrdetector.utils.CacheFile
 import com.checkpoint.qrdetector.utils.NV21toBitmap
 import com.herohan.uvcapp.CameraHelper
 import com.herohan.uvcapp.ICameraHelper
@@ -37,6 +41,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,7 +100,10 @@ class MainActivity : AppCompatActivity() {
 
     private  var imageView: ImageView? = null
 
+    private var notificationManager: NotificationManager? = null
 
+    private var cache: BitmapLruCache? = null
+    private var cacheFile:   CacheFile? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,6 +114,12 @@ class MainActivity : AppCompatActivity() {
         mCameraViewMain = findViewById(R.id.svCameraViewMain)
         imageView= findViewById(R.id.imageView)
         mCameraViewMain!!.setAspectRatio(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+        notificationManager =
+            getSystemService(
+                Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        cache = BitmapLruCache(BitmapLruCache.cacheSize)
+        cacheFile = CacheFile(this)
         mCameraViewMain!!.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 mCameraHelper?.addSurface(holder.surface, false)
@@ -259,7 +274,7 @@ class MainActivity : AppCompatActivity() {
             detectionResult.second!![0].boundingBox!!.left,
             detectionResult.second!![0].boundingBox!!.top
         )
-        directionDetection.image = Encode(detectionResult.first!!).encodeImage()
+        directionDetection.image = detectionResult.first!!
 
         directionDetectionList.add(directionDetection)
         detectionCounter++
@@ -273,20 +288,20 @@ class MainActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onEvent(onPostProcessingNotDetectedEvent: OnPostProccessingNotDetectedEvent) {
         onPostProcessingNotDetectedEvent.getResult()
-         if (onPostProcessingNotDetectedEvent.getResult()) {
-             if (detectionCounter >= 2) {
-                 synchronized(DIRECTION_DETECTOR_HANDLER_LOCK) {
-                     if (!mDirectorDetectorHandler!!.hasMessages(DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal)) {
-                          mDirectorDetectorHandler!!.obtainMessage(
-                             DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal,
-                              directionDetectionList.clone()
-                         ).sendToTarget()
-                         detectionCounter = 0
-                         directionDetectionList.clear()
-                     }
-                 }
-             }
-         }
+        if (onPostProcessingNotDetectedEvent.getResult()) {
+            if (detectionCounter >= 2) {
+                synchronized(DIRECTION_DETECTOR_HANDLER_LOCK) {
+                    if (!mDirectorDetectorHandler!!.hasMessages(DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal)) {
+                        mDirectorDetectorHandler!!.obtainMessage(
+                            DirectionDetectorHandler.Message.CALCULATE_DIRECTION.ordinal,
+                            directionDetectionList.clone()
+                        ).sendToTarget()
+                        detectionCounter = 0
+                        directionDetectionList.clear()
+                    }
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -299,21 +314,29 @@ class MainActivity : AppCompatActivity() {
         val now: OffsetDateTime = OffsetDateTime.now()
         val formatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
         val date = formatter.format(now)
-        val request = DetectionEventRequest(
-            image!!,
-            translation!!,
-            direction!!,
-            date
-        )
-        runOnUiThread {
 
-            Toast.makeText(this, direction, LENGTH_LONG).show()
-        }
-        Log.e("--->",request.toString())
-        QRDetectionApiRest("http://10.203.223.171:5000").postEvent(request)
+        notifyEvent(date,translation!!,direction!!,image!!)
+
 
     }
 
+
+    @SuppressLint("NewApi")
+    private fun notifyEvent(date: String, translation: String, direction: String, image: Bitmap){
+        val resultIntent = Intent(this, EventDetailActivity::class.java)
+        val idImage = UUID.randomUUID().toString()
+        cacheFile!!.saveImgToCache(image,"${idImage}.png")
+
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        resultIntent.putExtra("date",date)
+        resultIntent.putExtra("translation",translation)
+        resultIntent.putExtra("direction",direction)
+        resultIntent.putExtra("idImage",idImage)
+
+        val icon: Icon = Icon.createWithResource(this, android.R.drawable.ic_dialog_alert)
+        Thread.sleep(10000)
+        NotificationBuilder(notificationManager!!).getNotification(this,resultIntent,icon)
+    }
     /*
      * Thread declaration for each process required in detection translation qr code task
     */

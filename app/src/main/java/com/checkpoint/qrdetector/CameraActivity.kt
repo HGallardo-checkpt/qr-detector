@@ -2,8 +2,13 @@ package com.checkpoint.qrdetector
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +28,7 @@ import androidx.core.content.ContextCompat
 import com.checkpoint.qrdetector.api.APIInterfaces
 import com.checkpoint.qrdetector.api.QRDetectionApiRest
 import com.checkpoint.qrdetector.api.model.DetectionEventRequest
+import com.checkpoint.qrdetector.cache.BitmapLruCache
 import com.checkpoint.qrdetector.databinding.ActivityCameraBinding
 import com.checkpoint.qrdetector.detector.QRCodeReader
 import com.checkpoint.qrdetector.events.OnDetectionProcessEvent
@@ -33,17 +39,17 @@ import com.checkpoint.qrdetector.handlers.BitmapHandler
 import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
-import com.checkpoint.qrdetector.utils.Encode
-import com.checkpoint.qrdetector.utils.ImageToBitmap
-import com.checkpoint.qrdetector.utils.NV21toBitmap
-import com.checkpoint.qrdetector.utils.RotateBitmap
+import com.checkpoint.qrdetector.notification.NotificationBuilder
+import com.checkpoint.qrdetector.utils.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 
 @SuppressLint("StaticFieldLeak")
@@ -84,17 +90,27 @@ class CameraActivity : AppCompatActivity() {
     private  var txtTranslation: TextView ?= null
     private  var txtDirection: TextView ?= null
     private lateinit var binding: ActivityCameraBinding
+    private var notificationManager: NotificationManager? = null
+    private var cache: BitmapLruCache? = null
+    private var cacheFile:   CacheFile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         binding = ActivityCameraBinding.inflate(layoutInflater)
+        binding = ActivityCameraBinding.inflate(layoutInflater)
         txtTranslation = binding.textTranslationCode
         txtDirection = binding.textDirectionDetected
+
+        cacheFile = CacheFile(this)
 
         EventBus.getDefault().register(this)
         nV21toBitmap = NV21toBitmap(this)
         reader = QRCodeReader()
 
+        notificationManager =
+            getSystemService(
+                Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        cache = BitmapLruCache(BitmapLruCache.cacheSize)
         setContentView(binding.root)
 
         if (allPermissionsGranted()) {
@@ -160,6 +176,22 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    @SuppressLint("NewApi")
+    private fun notifyEvent(date: String, translation: String, direction: String, image: Bitmap){
+        val resultIntent = Intent(this, EventDetailActivity::class.java)
+        val idImage = UUID.randomUUID().toString()
+        cacheFile!!.saveImgToCache(image,"${idImage}")
+
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        resultIntent.putExtra("date",date)
+        resultIntent.putExtra("translation",translation)
+        resultIntent.putExtra("direction",direction)
+        resultIntent.putExtra("idImage",idImage)
+
+        val icon: Icon = Icon.createWithResource(this, android.R.drawable.ic_dialog_alert)
+        Thread.sleep(10000)
+        NotificationBuilder(notificationManager!!).getNotification(this,resultIntent,icon)
+    }
 
     ///////////////////////////////////////////////////
     /*
@@ -193,8 +225,7 @@ class CameraActivity : AppCompatActivity() {
             detectionResult.second!![0].boundingBox!!.left,
             detectionResult.second!![0].boundingBox!!.top
         )
-        directionDetection.image = Encode(detectionResult.first!!).encodeImage()
-
+        directionDetection.image =detectionResult.first!!
         directionDetectionList.add(directionDetection)
         detectionCounter++
     }
@@ -234,18 +265,8 @@ class CameraActivity : AppCompatActivity() {
         val formatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
         val date = formatter.format(now)
 
-        runOnUiThread {
+        notifyEvent(date,translation!!,direction!!,image!!)
 
-            txtTranslation!!.text = translation
-            txtDirection!!.text = direction
-        }
-        val request = DetectionEventRequest(
-            "data:image/jpeg;base64,"+image!!,
-            translation!!,
-            direction!!,
-            date
-        )
-        QRDetectionApiRest("http://10.203.223.171:5000").postEvent(request)
 
     }
 
@@ -313,9 +334,9 @@ class CameraActivity : AppCompatActivity() {
 
         override fun analyze(image: ImageProxy) {
 
-           val bitmap = RotateBitmap().rotate(
-               ImageToBitmap().toBitmap(image.planes,image.width,image.height),
-               90f)
+            val bitmap = RotateBitmap().rotate(
+                ImageToBitmap().toBitmap(image.planes,image.width,image.height),
+                90f)
             synchronized (BITMAP_HANDLER_LOCK) {
                 if (mBitmapHandler != null &&
                     !mBitmapHandler!!.hasMessages(BitmapHandler.Message.SET_BITMAP.ordinal)) {
