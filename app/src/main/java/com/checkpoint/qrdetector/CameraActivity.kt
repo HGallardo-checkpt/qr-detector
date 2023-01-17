@@ -25,10 +25,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.checkpoint.qrdetector.api.APIInterfaces
-import com.checkpoint.qrdetector.api.QRDetectionApiRest
-import com.checkpoint.qrdetector.api.model.DetectionEventRequest
-import com.checkpoint.qrdetector.cache.BitmapLruCache
 import com.checkpoint.qrdetector.databinding.ActivityCameraBinding
 import com.checkpoint.qrdetector.detector.QRCodeReader
 import com.checkpoint.qrdetector.events.OnDetectionProcessEvent
@@ -40,7 +36,6 @@ import com.checkpoint.qrdetector.handlers.DirectionDetectorHandler
 import com.checkpoint.qrdetector.handlers.InferenceHandler
 import com.checkpoint.qrdetector.model.DirectionDetection
 import com.checkpoint.qrdetector.notification.NotificationBuilder
-import com.checkpoint.qrdetector.ui.AdminConsoleFragment
 import com.checkpoint.qrdetector.ui.EventDetailFragment
 import com.checkpoint.qrdetector.utils.*
 import org.greenrobot.eventbus.EventBus
@@ -68,7 +63,7 @@ private var mInferenceHandlerThread: HandlerThread? = null
 
 private val DIRECTION_DETECTOR_THREAD_NAME = String.format(
     "%s%s",
-    MainActivity::class.java.simpleName, "DetectorThread"
+    CameraActivity::class.java.simpleName, "DetectorThread"
 )
 private val BITMAP_THREAD_NAME = String.format(
     "%s%s",
@@ -76,7 +71,7 @@ private val BITMAP_THREAD_NAME = String.format(
 )
 private val INFERENCE_THREAD_NAME = String.format(
     "%s%s",
-    MainActivity::class.java.simpleName, "InferenceThread"
+    CameraActivity::class.java.simpleName, "InferenceThread"
 )
 
 private val BITMAP_HANDLER_LOCK = Any()
@@ -93,8 +88,8 @@ class CameraActivity : AppCompatActivity() {
     private  var txtDirection: TextView ?= null
     private lateinit var binding: ActivityCameraBinding
     private var notificationManager: NotificationManager? = null
-    private var cache: BitmapLruCache? = null
     private var cacheFile:   CacheFile? = null
+    var fragment: EventDetailFragment?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,7 +106,6 @@ class CameraActivity : AppCompatActivity() {
             getSystemService(
                 Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        cache = BitmapLruCache(BitmapLruCache.cacheSize)
         setContentView(binding.root)
 
         if (allPermissionsGranted()) {
@@ -123,14 +117,20 @@ class CameraActivity : AppCompatActivity() {
             )
         }
     }
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        supportFragmentManager.popBackStackImmediate()
+    }
     override fun onStart() {
         super.onStart()
         startBitmapHandlerThread()
         startInferenceThread()
         configureDetector()
         startDirectionDetectorThread()
+
+
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -140,6 +140,7 @@ class CameraActivity : AppCompatActivity() {
         stopDirectionDetectorThread()
     }
 
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
@@ -147,14 +148,13 @@ class CameraActivity : AppCompatActivity() {
         var translate =intent!!.extras!!.getString("translation")
         var direction =intent!!.extras!!.getString("direction")
         var image =intent!!.extras!!.getString("idImage")
-        var fragment = EventDetailFragment.newInstance(date!!,translate!!,direction!!,image!!)
 
+        fragment = EventDetailFragment.newInstance(date!!, translate!!, direction!!, image!!)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.container, fragment, "FRAGMENT")
-            .disallowAddToBackStack()
+            .addToBackStack("FRAGMENT_DETAIL")
+            .add(R.id.container, fragment!!)
             .commit()
-
 
     }
 

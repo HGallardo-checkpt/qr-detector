@@ -27,26 +27,26 @@ class DirectionDetectorHandler(looper: Looper) : Handler(looper) {
                     val secondLocation: Point? = directionDetectionList[size].position
                     if (firstLocation!!.x < secondLocation!!.x) {
                         OnFinishDetectionEvent(
-                            "DOWN TO UP",
+                            "Outbound",
                             directionDetectionList[0].translate,
                             directionDetectionList[0].image!!
                         ).broadcastEvent()
                     } else if (firstLocation.x > secondLocation.x) {
                         OnFinishDetectionEvent(
-                            "UP to DOWN",
+                            "Inbound",
                             directionDetectionList[0].translate,
                             directionDetectionList[0].image!!
                         ).broadcastEvent()
                     } else {
                         if (secondLocation.x > center!!.x) {
                             OnFinishDetectionEvent(
-                                "DOWN TO UP",
+                                "Outbound",
                                 directionDetectionList[0].translate,
                                 directionDetectionList[0].image!!
                             ).broadcastEvent()
                         } else {
                             OnFinishDetectionEvent(
-                                "UP to DOWN",
+                                "Inbound",
                                 directionDetectionList[0].translate,
                                 directionDetectionList[0].image!!
                             ).broadcastEvent()

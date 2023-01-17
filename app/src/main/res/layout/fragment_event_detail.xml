@@ -3,120 +3,373 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_gravity=""
-    android:background="@color/white"
-    tools:context=".ui.EventDetailFragment">
+    tools:context=".ui.EventDetailFragment"
+    android:background="@color/denim">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="60"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@drawable/bg_image_view"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:layout_margin="10dp">
 
-        android:orientation="vertical">
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:text="Event Detected"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/navy"></TextView>
         <ImageView
             android:id="@+id/imgDetection"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="45"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_weight="6"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="15dp">
+        </ImageView>
 
-            />
-        <TextView
-            android:id="@+id/textDate"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:gravity="center"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="40"
-        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="10"
+            android:layout_weight="6"
+            android:padding="10dp"
             android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="50"
-                android:gravity="center">
-
+                android:layout_weight="8"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Direction: "
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50"
-                android:gravity="center">
+                    android:text="@string/code_translation"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="40dp"
+                    android:textColor="@color/black"></TextView>
 
                 <TextView
                     android:id="@+id/textDirectionDetected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="#Checkpoint Systems"
+                    android:textSize="18sp"
+                    android:paddingLeft="40dp"
 
-            </RelativeLayout>
+                    android:textColor="@color/navy" />
+            </LinearLayout>
 
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="25dp"
-                android:layout_weight="50"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Translation: "
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/textTranslationCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-
-                    />
-
-            </RelativeLayout>
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/blue_tint"
+                android:layout_marginTop="20dp"></TextView>
 
 
         </LinearLayout>
-
 
     </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_arrow"
+                android:backgroundTint="@color/white"
+                android:gravity="center">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/direction"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:gravity="center"></TextView>
+
+            <TextView
+                android:id="@+id/textTranslationCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="DOWN_TO_UP"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:layout_marginTop="10dp"></TextView>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_date"
+                android:backgroundTint="@color/white"
+                android:gravity="center">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:gravity="center"></TextView>
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="16/01/2023 03:27:00"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="10dp"></TextView>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity=""
+        tools:context=".ui.EventDetailFragment"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="59.5"
+            android:orientation="vertical"
+            android:weightSum="10"
+            android:gravity="center_horizontal|center_vertical">
+
+
+                <ImageView
+                    android:id="@+id/imgDetection"
+                    android:layout_width="300dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="8">
+                </ImageView>
+
+
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:textSize="20sp"
+                android:textColor="?android:textColorSecondary"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:background="@color/blue_tint"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="40"
+            android:orientation="vertical"
+            android:weightSum="10">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="25dp"
+                    android:layout_weight="50"
+                    android:gravity="center"
+                    android:weightSum="10"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="6"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="40dp"
+                        android:gravity="center_horizontal|center_vertical">
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/ic_arrow"
+                            android:textSize="10sp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:backgroundTint="@color/denim"></TextView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/direction"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:layout_weight="4"/>
+
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textDirectionDetected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_weight="0"
+                android:background="@color/blue_tint"
+                android:layout_marginRight="15dp"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4.5"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="25dp"
+                    android:layout_weight="50"
+                    android:gravity="center"
+                    android:weightSum="10"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="6"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="40dp"
+                        android:gravity="center_horizontal|center_vertical">
+                        <TextView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/ic_qr"
+                            android:textSize="10sp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:backgroundTint="@color/denim"></TextView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/translation"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:layout_weight="4"/>
+
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textTranslationCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
+                        />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>-->

@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Point
 import android.graphics.SurfaceTexture
 import android.graphics.drawable.Icon
@@ -60,7 +59,7 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
     private var libVlc: LibVLC? = null
     private var mediaPlayer: MediaPlayer? = null
     private var videoLayout: TextureView? = null
-    private val url = "rtsp://admin1:adminroot@10.203.222.176/stream1"
+    private val url ="rtsp://192.168.100.159:554/onvif1"// "rtsp://admin1:adminroot@10.203.222.176/stream1"
     private lateinit var cacheFile: CacheFile
     private var nV21toBitmap: NV21toBitmap? = null
     private var reader: QRCodeReader? = null
@@ -118,8 +117,9 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
         cacheFile = CacheFile(this)
 
         libVlc =  LibVLC(this)
+
         mediaPlayer =  MediaPlayer(libVlc)
-        mediaPlayer!!.scale = 1.8f
+        mediaPlayer!!.scale = 1.9f
 
         EventBus.getDefault().register(this)
         nV21toBitmap = NV21toBitmap(this)
@@ -136,6 +136,8 @@ class VLCActivity : AppCompatActivity(), TextureView.SurfaceTextureListener{
         startInferenceThread()
         configureDetector()
         startDirectionDetectorThread()
+
+
     }
 
     override fun onDestroy() {

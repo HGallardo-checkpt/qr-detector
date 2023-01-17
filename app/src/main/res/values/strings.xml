@@ -2,4 +2,10 @@
     <string name="app_name">QRDetector</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="direction_detected">Direction detected: </string>
+    <string name="code_translation">Code Translation: </string>
+    <string name="translation">Translation</string>
+    <string name="direction">Direction</string>
+    <string name="date">Date</string>
+
 </resources>

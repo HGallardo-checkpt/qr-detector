@@ -2,11 +2,11 @@ package com.checkpoint.qrdetector.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.checkpoint.qrdetector.R
+import androidx.fragment.app.Fragment
 import com.checkpoint.qrdetector.databinding.FragmentEventDetailBinding
 import com.checkpoint.qrdetector.utils.CacheFile
 
@@ -21,7 +21,7 @@ private const val ID_IMAGE = "idImage"
  * create an instance of this fragment.
  */
 class EventDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var translation: String? = null
     private var direction: String? = null
     private var idImage: String? = null
@@ -51,8 +51,13 @@ class EventDetailFragment : Fragment() {
         binding.textDate.text= date
         binding.textTranslationCode.text = translation
         binding.textDirectionDetected.text = direction
+        Log.e("translation",translation!!)
+        Log.e("direction",direction!!)
+
         var bitmap = cacheFile!!.getImageFromCache("$idImage")
         binding.imgDetection.setImageBitmap(bitmap)
+        binding.textDate.setOnClickListener {
+         }
         return binding.root
 
     }
@@ -62,11 +67,12 @@ class EventDetailFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param date Parameter 1.
-         * @param direction Parameter 2.
-         * @param translation Parameter 2.
-         * @param direcimagetion Parameter 2.
+         * @param date Date of event occurs
+         * @param direction Direction estimation from image analysis
+         * @param translation QR code content on human readable format
+         * @param idImage  Name of cached image of detection event
          * @return A new instance of fragment EventDetailFragment.
+         *
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic

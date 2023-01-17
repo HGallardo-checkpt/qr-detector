@@ -39,18 +39,16 @@ open class NotificationBuilder(var notificationManager: NotificationManager) {
             longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
         notificationManager?.createNotificationChannel(channel)
 
-        val backgound = createImage(150,150, R.color.purple_700)
+        val backgound= Icon.createWithResource(context, R.drawable.ic_qr)
         val notification = Notification.Builder(context, channelID)
             .setContentText("A QR Code has been detected")
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setChannelId(channel.id)
             .setContentIntent(pendingIntent)
             .setActions(action)
-            .setLargeIcon(backgound)
-            .setStyle(
-                Notification.BigPictureStyle()
-                    .bigPicture(backgound))
+            .setLargeIcon(backgound!!)
             .build()
+        notificationManager?.notify(notificationID, notification)
         notificationManager?.notify(notificationID, notification)
 
 
